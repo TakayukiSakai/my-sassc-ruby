@@ -14,6 +14,8 @@ Gem::Specification.new do |spec|
 
   spec.extensions    = ["Rakefile"]
 
+  spec.add_dependency "ffi"
+
   gem_dir = File.expand_path(File.dirname(__FILE__)) + "/"
   `git submodule --quiet foreach pwd`.split($\).each do |submodule_path|
     Dir.chdir(submodule_path) do

@@ -7,13 +7,17 @@ class Mysassc
   def self.convert(input)
     data_context = Native.make_data_context(input)
     context = Native.data_context_get_context(data_context)
-    css = Native.context_get_output_string(context)
-    css.force_encoding(@template.encoding)
+    Native.compile_data_context(data_context)
+    Native.context_get_output_string(context)
   end
 end
 
 
+require "ffi"
+
 module Native
+  extend FFI::Library
+
   spec = Gem::Specification.find_by_name("mysassc")
   gem_root = spec.gem_dir
   ffi_lib "#{gem_root}/ext/libsass/lib/libsass.so"
@@ -23,8 +27,9 @@ module Native
 
   attach_function :malloc, [:size_t], :pointer
   attach_function :_make_data_context, :sass_make_data_context, [:pointer], :sass_data_context_ptr
-  attach_function :data_context_get_context, [:sass_data_context_ptr], :sass_context_ptr
-  attach_function :context_get_output_string, [:sass_context_ptr], :string
+  attach_function :data_context_get_context, :sass_data_context_get_context, [:sass_data_context_ptr], :sass_context_ptr
+  attach_function :compile_data_context, :sass_compile_data_context, [:sass_data_context_ptr], :int
+  attach_function :context_get_output_string, :sass_context_get_output_string, [:sass_context_ptr], :string
 
   def self.make_data_context(data)
     _make_data_context(Native.native_string(data))
