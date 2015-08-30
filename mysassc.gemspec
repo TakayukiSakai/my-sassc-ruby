@@ -10,4 +10,6 @@ Gem::Specification.new do |spec|
   spec.license       = "MIT"
   spec.files         = `git ls-files -z`.split("\x0")
   spec.has_rdoc      = false
+
+  spec.extensions    = ["Rakefile"]
 end
